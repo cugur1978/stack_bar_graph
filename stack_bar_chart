@@ -1,0 +1,39 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+path= "Path of your document"
+
+df = pd.read_excel(path, sheet_name='All_1')
+
+df_specific = pd.read_excel(path, sheet_name='Enzyme_1', usecols = [6])
+
+df_specific_2= df_specific.dropna()
+
+Specific_Error = df_specific_2['St_Dev_S'].tolist()
+
+df_total = pd.read_excel(path, sheet_name='Enzyme_1', usecols = [3])
+
+df_total_2= df_total.dropna()
+
+Total_Error = df_total_2['St_Dev_T'].tolist()
+        
+        
+plt.figure(figsize=(15,7));
+
+width = 0.65
+
+p1 = plt.bar(df['Gene'], df['Specific_Activity'], width, yerr = Specific_Error, color=['blue'], capsize=5)
+p2 = plt.bar(df['Gene'], df['Total_Activity'], width, yerr = Total_Error, color='r', capsize=5)
+
+plt.xlabel("Enzymes")
+plt.ylabel("Enzyme Activity")
+plt.legend(["Total Activity (U/ml)", "Specific Activity (U/mg)"])
+
+plt.bar_label(p1, padding=5, fmt='%.1f', fontsize=9)
+plt.bar_label(p2, padding=6, fmt='%.1f', color='w', fontsize=9)
+
+plt.axhline(y=35, color='red', linestyle='dotted', linewidth=1.5)
+
+plt.savefig("Enzyme_Avtivity.svg", dpi=300)
+
+plt.show()
